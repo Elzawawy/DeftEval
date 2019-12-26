@@ -41,6 +41,17 @@ Where:
 * **ROOT_ID** is the ID associated with the root of this relation (-1 if no relation/O tag, 0 if root, and TAG_ID of root if not the root)
 * **RELATION** is the relation tag of the token (0 if none).
 
+## Understanding Dataset Folder Structure 
+- `deft_corpus\data\deft_files`: contains the dataset files itself. It has two splits divided into two subfolders: 
+  - `train`: For training split. 
+  - `dev`: For development split (used as testing data for evaluation when submitting on website in Training Phase).
+- `deft_corpus\data\reference_files`: Are used in the Codalab pipeline for evaluation purposes. When you submit your predictions via Codalab, these are the exact files that the scoring program evaluates your submission against.
+- `deft_corpus\data\source_txt`: The original sentences extracted from the textbooks used in the dataset. The source_txt has 80 files full of sentences for training and 68 files for development with less sentences per file.
+The deft_files have nearly the same files names as in source_text. 
+- `deft_corpus\task1_convertor.py`: This script is used to convert from the sequence/relation labeling format to classification format.This produces files in the following tab-delineated format: **[SENTENCE]  [HAS_DEF]**. 
+This is intended for Subtask 1: Sentence Classification.
+
+
 ## Understanding Annotation Schema
 The DEFT annotation schema is comprised of terms and definitions, as well as various auxiliary tags which aid in identifying complex or long-distance relationships between a term-definition pair. With the exception of "implicit" definitions (defined below), all terms are linked in some way to a definition or alias term.
 
