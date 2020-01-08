@@ -1,5 +1,7 @@
 import pandas as pd 
 import os
+import spacy
+from spacy.lang.en import English
 from scripts import task1_converter 
 from pathlib import Path
 
@@ -35,7 +37,7 @@ class DeftCorpusLoader(object):
         task1_converter.convert(Path(dev_source_path), Path(dev_output_path))
 
     def load_classification_data(self, train_data_path = None, dev_data_path = None):
-        
+
         if(train_data_path ==  None or dev_data_path == None):
             self.convert_to_classification_format()
             train_data_path = self.converted_train_path
@@ -57,3 +59,19 @@ class DeftCorpusLoader(object):
         
         return (train_dataframe, dev_dataframe)
 
+    def preprocess_data(self, dataframe):
+        nlp = spacy.load('en_core_web_sm')
+        # Load English tokenizer, tagger, parser, NER and word vectors
+        parser = English()
+        dataframe["Parsed"] = dataframe.Sentence.apply(self._spacy_preprocessor)
+
+    def _spacy_preprocessor(self, parser, sentence):
+        # Creating our tokens object, which is used to create documents with linguistic annotations.
+        tokens = parser(sentence)
+        # Lemmatizing each token and converting each token into lowercase
+        # Removing stop words, punctuations, spaces and non alphanumeric characters.
+        tokens = [ token.lemma_.lower().strip() for token in tokens 
+                    if not token.is_stop and not token.is_punct and 
+                        not token.is_space and token.is_alpha ]
+        # return preprocessed list of tokens
+        return tokens
