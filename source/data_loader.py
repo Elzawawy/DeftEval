@@ -12,6 +12,7 @@ class DeftCorpusLoader(object):
         self.corpus_path = deft_corpus_path
         self._default_train_output_path = os.path.join(deft_corpus_path, "deft_files/converted_train")
         self._default_dev_output_path = os.path.join(deft_corpus_path, "deft_files/converted_dev")
+        # Load English tokenizer, tagger, parser, NER and word vectors
         self._parser = English()
 
     def convert_to_classification_format(self, train_output_path = None, dev_output_path = None):
@@ -72,8 +73,12 @@ class DeftCorpusLoader(object):
 
     def preprocess_data(self, dataframe):
         nlp = spacy.load('en_core_web_sm')
-        # Load English tokenizer, tagger, parser, NER and word vectors
         dataframe["Parsed"] = dataframe.Sentence.apply(self._spacy_preprocessor)
+
+    def clean_data(self, dataframe):
+        for index,parsed_list in enumerate(dataframe["Parsed"]):
+            if len(parsed_list) < 5:
+                dataframe.drop(index, inplace=True)
 
     def _spacy_preprocessor(self, sentence):
         # Creating our tokens object, which is used to create documents with linguistic annotations.
