@@ -1,6 +1,8 @@
 import pandas as pd 
 import os
+import string
 import spacy
+from spacy.lang.en.stop_words import STOP_WORDS
 from spacy.lang.en import English
 from scripts import task1_converter 
 from pathlib import Path
@@ -10,14 +12,15 @@ class DeftCorpusLoader(object):
     def __init__(self, deft_corpus_path):
         super().__init__()
         self.corpus_path = deft_corpus_path
-        self._default_train_output_path = "deft_files/converted_train"
-        self._default_dev_output_path = "deft_files/converted_dev"
+        self._default_train_output_path = os.path.join(deft_corpus_path, "deft_files/converted_train")
+        self._default_dev_output_path = os.path.join(deft_corpus_path, "deft_files/converted_dev")
+        self._parser = English()
 
     def convert_to_classification_format(self, train_output_path = None, dev_output_path = None):
 
         if train_output_path == None or dev_output_path == None: 
-            train_output_path = os.path.join(self.corpus_path, self._default_train_output_path)
-            dev_output_path = os.path.join(self.corpus_path, self._default_dev_output_path)
+            train_output_path = self._default_train_output_path
+            dev_output_path = self._default_dev_output_path
             if not os.path.exists(train_output_path):
                 os.mkdir(train_output_path)
             if not os.path.exists(dev_output_path):
@@ -39,9 +42,13 @@ class DeftCorpusLoader(object):
     def load_classification_data(self, train_data_path = None, dev_data_path = None):
 
         if(train_data_path ==  None or dev_data_path == None):
-            self.convert_to_classification_format()
-            train_data_path = self.converted_train_path
-            dev_data_path = self.converted_dev_path
+            if os.path.exists(self._default_train_output_path) and os.path.exists(self._default_dev_output_path):
+                train_data_path = self._default_train_output_path
+                dev_data_path = self._default_dev_output_path
+            else:
+                self.convert_to_classification_format()
+                train_data_path = self.converted_train_path
+                dev_data_path = self.converted_dev_path
 
         train_deft_files = os.listdir(train_data_path)
         train_dataframe = pd.DataFrame([])
@@ -59,15 +66,22 @@ class DeftCorpusLoader(object):
         
         return (train_dataframe, dev_dataframe)
 
+    def explore_data(self, dataframe, split):
+        print("\nHead of ", split," Dataframe:\n==============================================================")
+        print(dataframe.head())
+        print("==============================================================")
+        print("Number of instances of ",split ,"is",len(dataframe))
+
     def preprocess_data(self, dataframe):
         nlp = spacy.load('en_core_web_sm')
         # Load English tokenizer, tagger, parser, NER and word vectors
-        parser = English()
         dataframe["Parsed"] = dataframe.Sentence.apply(self._spacy_preprocessor)
 
-    def _spacy_preprocessor(self, parser, sentence):
+    def _spacy_preprocessor(self, sentence):
+        stop_words = spacy.lang.en.stop_words.STOP_WORDS
+        punctuations = string.punctuation
         # Creating our tokens object, which is used to create documents with linguistic annotations.
-        tokens = parser(sentence)
+        tokens = self._parser(sentence)
         # Lemmatizing each token and converting each token into lowercase
         # Removing stop words, punctuations, spaces and non alphanumeric characters.
         tokens = [ token.lemma_.lower().strip() for token in tokens 
