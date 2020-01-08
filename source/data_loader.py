@@ -1,8 +1,6 @@
 import pandas as pd 
 import os
-import string
 import spacy
-from spacy.lang.en.stop_words import STOP_WORDS
 from spacy.lang.en import English
 from scripts import task1_converter 
 from pathlib import Path
@@ -78,8 +76,6 @@ class DeftCorpusLoader(object):
         dataframe["Parsed"] = dataframe.Sentence.apply(self._spacy_preprocessor)
 
     def _spacy_preprocessor(self, sentence):
-        stop_words = spacy.lang.en.stop_words.STOP_WORDS
-        punctuations = string.punctuation
         # Creating our tokens object, which is used to create documents with linguistic annotations.
         tokens = self._parser(sentence)
         # Lemmatizing each token and converting each token into lowercase
