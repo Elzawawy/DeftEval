@@ -2,6 +2,10 @@ import spacy
 import en_core_web_lg
 from spacy.util import minibatch, compounding
 from pathlib import Path
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import f1_score
+from sklearn.metrics import precision_score
+from sklearn.metrics import recall_score
 
 class SpacyDeftCorpusClassifier(object):
 
@@ -94,3 +98,16 @@ class SpacyDeftCorpusClassifier(object):
         else:
             f_score = 2 * (precision * recall) / (precision + recall)
         return {"textcat_p": precision, "textcat_r": recall, "textcat_f": f_score}
+
+    def score(self, classifier_model, dev_texts, dev_cats):
+        nlp = spacy.load(classifier_model)
+        predicted = []
+        for index,item in enumerate(dev_texts):
+            doc = nlp(item)
+            predict_doc = 1 if doc.cats[self.POSITIVE] > doc.cats[self.NEGATIVE] else 0
+            predicted.append(predict_doc)
+        # Print the resulting scores.
+        print("The accuracy score of this classifier is", accuracy_score(list(dev_cats), predicted))
+        print("The F1 score of this classifier is", f1_score(list(dev_cats), predicted))
+        print("The Precision score of this classifier is", precision_score(list(dev_cats), predicted))
+        print("The Recall score of this classifier is", recall_score(list(dev_cats), predicted))
