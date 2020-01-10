@@ -85,13 +85,17 @@ DeftEval is split into three subtasks,
 Test data will be evaluated in the following CONLL-2003-like formats:
 
 - Subtask 1: Sentence Classification 
-  - **[SENTENCE] [BIN_TAG]** Where the binary tag is 1 if the sentence contains a definition and 0 if the sentence does not contain a definition.
+  - **[SENTENCE] [BIN_TAG]** Where the binary tag is 1 if the sentence contains a definition and 0 if the sentence does not contain a definition. We will report P/R/F1 for the positive and negative classes. The official score will be based on the F1 for the positive class.
+
 
 - Subtask 2: Sequence Labeling
-  - **[TOKEN] [SOURCE] [START_CHAR] [END_CHAR] [TAG]**
+  - **[TOKEN] [SOURCE] [START_CHAR] [END_CHAR] [TAG]** We will report P/R/F1 for each evaluated class, as well as macro- and micro-averaged F1 for the evaluated classes. The official score will be based on the macro-averaged F1 of the evaluated classes. Evaluated classes include: Term, Alias-Term, Referential-Term, Definition, Referential-Definition, and Qualifier.
+
 
 - Subtask 3: Relation Extraction
-  - **[TOKEN] [SOURCE] [START_CHAR] [END_CHAR] [TAG] [TAG_ID] [ROOT_ID] [RELATION]** Where ROOT_ID is -1 if there is no relation, 0 if the token is part of the root, and TAG_ID of the root if the token points to the root.
+  - **[TOKEN] [SOURCE] [START_CHAR] [END_CHAR] [TAG] [TAG_ID] [ROOT_ID] [RELATION]** Where ROOT_ID is -1 if there is no relation, 0 if the token is part of the root, and TAG_ID of the root if the token points to the root. We will report P/R/F1 for each evaluated relation, as well as macro- and micro-averaged F1 for the evaluated relations. The official score will be based on  the macro-averaged F1 of the evaluated relations. The evaluated relations include: Direct-defines, Indirect-defines, Refers-to, AKA, and Qualifies.
+  
+For specifics about evaluation and submission through the CodeLab you can check [this](https://competitions.codalab.org/competitions/20900#learn_the_details-evaluation).
 
 ## Resources
 1. [*Weakly Supervised Definition Extraction (Luis Espinosa-Anke, Francesco Ronzano and Horacio Saggion), Proceedings of Recent Advances in Natural Language Processing, pages 176–185,Hissar, Bulgaria, Sep 7–9 2015.*](https://www.aclweb.org/anthology/R15-1025.pdf)
