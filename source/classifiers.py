@@ -17,6 +17,7 @@ class DeftSpacyClassifier(object):
             print("Loaded default model '%s'" % en_core_web_lg)
         
         if "textcat" not in self.nlp.pipe_names:
+            # Architecture: a neural network model where token vectors are calculated using a CNN. 
             self.textcat = self.nlp.create_pipe("textcat", 
                 config={"exclusive_classes": True, "architecture": "simple_cnn"})
             self.nlp.add_pipe(self.textcat, last=True)
@@ -24,7 +25,7 @@ class DeftSpacyClassifier(object):
             self.textcat = self.nlp.get_pipe("textcat")
 
         self.classifier_output = None
-        # add label to text classifier
+        # add label to text classifier pipe.
         self.POSITIVE = positive_label
         self.NEGATIVE = negative_label
         self.textcat.add_label(self.POSITIVE)
@@ -36,9 +37,11 @@ class DeftSpacyClassifier(object):
         # get names of other pipes to disable them during training
         other_pipes = [pipe for pipe in self.nlp.pipe_names if pipe != "textcat"]
         with self.nlp.disable_pipes(*other_pipes):  # only train textcat
+            # Initialize the pipe for training
             optimizer = self.nlp.begin_training()
         print("Training the model...")
         print("{:^5}\t{:^5}\t{:^5}\t{:^5}".format("LOSS", "P", "R", "F"))
+
         # Yield an infinite series of compounding values.
         batch_sizes = compounding(32.0, 100.0, 1.001)
         # The Training Loop
@@ -63,11 +66,14 @@ class DeftSpacyClassifier(object):
               break
         if output_dir is not None:
             output_dir = Path(output_dir)
+            # If it doesn't exist, no worries let's create it!
             if not output_dir.exists():
                 output_dir.mkdir()
             with self.nlp.use_params(optimizer.averages):
+                # Serialize the pipe to disk.
                 self.nlp.to_disk(output_dir)
             print("Saved model to", output_dir)
+            # set it for the score function to be computed later when needed.
             self.classifier_output = output_dir
 
     def evaluate(self, tokenizer, texts, cats):
