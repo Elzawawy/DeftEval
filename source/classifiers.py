@@ -1,4 +1,5 @@
 import spacy
+import random
 import en_core_web_lg
 from spacy.util import minibatch, compounding
 from pathlib import Path
@@ -38,12 +39,13 @@ class SpacyDeftCorpusClassifier(object):
             optimizer = self.nlp.begin_training()
         print("Training the model...")
         print("{:^5}\t{:^5}\t{:^5}\t{:^5}\t{:^5}".format("LOSS", "P", "R", "F"))
+        # Yield an infinite series of compounding values.
         batch_sizes = compounding(32.0, 100.0, 1.001)
         # The Training Loop
         for i in range(n_iter):
             losses = {}
-            # batch up the examples using spaCy's minibatch
             random.shuffle(train_data)
+            # Iterate over batches of items, batch-size vary on each step.
             batches = minibatch(train_data, size=batch_sizes)
             for batch in batches:
                 texts, annotations = zip(*batch)

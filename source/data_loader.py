@@ -38,7 +38,7 @@ class DeftCorpusLoader(object):
         task1_converter.convert(Path(train_source_path), Path(train_output_path))
         task1_converter.convert(Path(dev_source_path), Path(dev_output_path))
 
-    def load_classification_data(self, train_data_path = None, dev_data_path = None):
+    def load_classification_data(self, train_data_path = None, dev_data_path = None, preprocess= False, clean=False):
 
         if(train_data_path ==  None or dev_data_path == None):
             if os.path.exists(self._default_train_output_path) and os.path.exists(self._default_dev_output_path):
@@ -62,7 +62,17 @@ class DeftCorpusLoader(object):
             dataframe = pd.read_csv(os.path.join(dev_data_path, file), sep="\t", header = None)
             dataframe.columns = ["Sentence","HasDef"]
             dev_dataframe = dev_dataframe.append(dataframe, ignore_index=True)
-        
+
+        if(preprocess):
+            self.preprocess_data(train_dataframe)
+            self.preprocess_data(dev_dataframe)
+            
+        if(clean and preprocess):
+            self.clean_data(train_dataframe)
+            self.clean_data(dev_dataframe)
+        elif(clean):
+            raise ValueError("Can't set `clean` flag to true if `preprocess` flag hasn't been already set.")
+
         return (train_dataframe, dev_dataframe)
 
     def explore_data(self, dataframe, split):
