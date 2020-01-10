@@ -70,6 +70,9 @@ class DeftCorpusLoader(object):
         print(dataframe.head())
         print("==============================================================")
         print("Number of instances of ",split ,"is",len(dataframe))
+        print("==============================================================")
+        print("Statistics of Sentences:\n==============================================================")
+        print(dataframe.Sentence.describe())
 
     def preprocess_data(self, dataframe):
         nlp = spacy.load('en_core_web_sm')
@@ -79,6 +82,8 @@ class DeftCorpusLoader(object):
         for index,parsed_list in enumerate(dataframe["Parsed"]):
             if len(parsed_list) < 5:
                 dataframe.drop(index, inplace=True)
+        # remove duplicate sentences from corpus
+        dataframe.drop_duplicates(subset= "Sentence", inplace=True)
 
     def _spacy_preprocessor(self, sentence):
         # Creating our tokens object, which is used to create documents with linguistic annotations.

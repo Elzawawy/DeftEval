@@ -2,10 +2,7 @@ import spacy
 import en_core_web_lg
 from spacy.util import minibatch, compounding
 from pathlib import Path
-from sklearn.metrics import accuracy_score
-from sklearn.metrics import f1_score
-from sklearn.metrics import precision_score
-from sklearn.metrics import recall_score
+from sklearn.metrics import classification_report
 
 class SpacyDeftCorpusClassifier(object):
 
@@ -107,7 +104,4 @@ class SpacyDeftCorpusClassifier(object):
             predict_doc = 1 if doc.cats[self.POSITIVE] > doc.cats[self.NEGATIVE] else 0
             predicted.append(predict_doc)
         # Print the resulting scores.
-        print("The accuracy score of this classifier is", accuracy_score(list(dev_cats), predicted))
-        print("The F1 score of this classifier is", f1_score(list(dev_cats), predicted))
-        print("The Precision score of this classifier is", precision_score(list(dev_cats), predicted))
-        print("The Recall score of this classifier is", recall_score(list(dev_cats), predicted))
+        print(classification_report(list(dev_cats), predicted))
