@@ -5,7 +5,7 @@ from spacy.util import minibatch, compounding
 from pathlib import Path
 from sklearn.metrics import classification_report
 
-class SpacyDeftCorpusClassifier(object):
+class DeftSpacyClassifier(object):
 
     def __init__(self, lang_model= None, positive_label="POSITIVE", negative_label="NEGATIVE"):
         super().__init__()
