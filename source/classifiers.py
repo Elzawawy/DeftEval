@@ -23,6 +23,7 @@ class DeftSpacyClassifier(object):
         else:
             self.textcat = self.nlp.get_pipe("textcat")
 
+        self.classifier_output = None
         # add label to text classifier
         self.POSITIVE = positive_label
         self.NEGATIVE = negative_label
@@ -68,6 +69,7 @@ class DeftSpacyClassifier(object):
             with self.nlp.use_params(optimizer.averages):
                 self.nlp.to_disk(output_dir)
             print("Saved model to", output_dir)
+            self.classifier_output = output_dir
 
     def evaluate(self, tokenizer, texts, cats):
         docs = (tokenizer(text) for text in texts)
@@ -98,8 +100,10 @@ class DeftSpacyClassifier(object):
             f_score = 2 * (precision * recall) / (precision + recall)
         return {"textcat_p": precision, "textcat_r": recall, "textcat_f": f_score}
 
-    def score(self, classifier_model, dev_texts, dev_cats):
-        nlp = spacy.load(classifier_model)
+    def score(self, dev_texts, dev_cats):
+        if(self.classifier_output is None):
+            raise NotImplementedError("You must save the model to an output directory after training, in order to use this function. Other ways are not implemented currently.")
+        nlp = spacy.load(self.classifier_output)
         predicted = []
         for index,item in enumerate(dev_texts):
             doc = nlp(item)
