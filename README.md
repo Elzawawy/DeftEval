@@ -24,7 +24,16 @@ Przepiorkowski et al., 2007; Monachesi and Westerhout, 2008).
 As for supervised settings, let us refer to (Navigli and Velardi, 2010), who **propose a generalization of word lattices for identifying definitional components and ultimately identifying definitional text fragments.** Finally, **more complex morphosyntactic patterns** were used by (Boella et al., 2014), who model single tokens as relations over the sentence syntactic dependencies.
 Or unsupervised approaches (Reiplinger et al., 2012) **benefit from hand crafted definitional patterns.**
 
-## Understanding the dataset
+## Undertsanding the competition
+DeftEval 2020 is part of SemEval 2020 official competition (Task 6). Organized by the Adobe Document Cloud Team. 
+DeftEval is split into three subtasks,
+- **Subtask 1: Sentence Classification**, Given a sentence, classify whether or not it contains a definition. This is the traditional definition extraction task.
+
+- **Subtask 2: Sequence Labeling**, Label each token with BIO tags according to the corpus' tag specification.
+
+- **Subtask 3: Relation Classification**, Given the tag sequence labels, label the relations between each tag according to the corpus' relation specification.
+
+## Understanding the DEFT Corpus
 The DEFT corpus contains roughly 7,000 sets of 3-sentence groupings extracted from textbooks of various topics from cnx.org. Each sentence set reflects a context window around which the author of the original text marked a bolded word to indicate a key term. For annotation reasons, the bolded words are not included in the annotated corpus, though you may find them from the textbooks themselves. Each grouping may have multiple term-definition pairs or none at all - it is simply a context window around a likely location for a term.
 
 Train and dev data is provided to you in a CONLL-like tab-deliniated format. Each line represents a token and its features. A single blank line indicates a sentence break; two blank lines indicates a new 3-sentence context window. All context windows begin with a sentence id followed by a period. These are treated as tokens in the data. Each token is represented by the following features:
@@ -41,7 +50,7 @@ Where:
 * **ROOT_ID** is the ID associated with the root of this relation (-1 if no relation/O tag, 0 if root, and TAG_ID of root if not the root)
 * **RELATION** is the relation tag of the token (0 if none).
 
-## Understanding Dataset Folder Structure 
+## Understanding Dataset Folder Structure (released on Github)
 - `deft_corpus\data\deft_files`: contains the dataset files itself. It has two splits divided into two subfolders: 
   - `train`: For training split. 
   - `dev`: For development split (used as testing data for evaluation when submitting on website in Training Phase).
@@ -52,7 +61,7 @@ The deft_files have nearly the same files names as in source_text.
 This is intended for Subtask 1: Sentence Classification.
 
 
-## Understanding Annotation Schema
+## Understanding Dataset Annotation Schema 
 The DEFT annotation schema is comprised of terms and definitions, as well as various auxiliary tags which aid in identifying complex or long-distance relationships between a term-definition pair. With the exception of "implicit" definitions (defined below), all terms are linked in some way to a definition or alias term.
 
 ### Tag Full Schema
@@ -74,14 +83,7 @@ The DEFT annotation schema is comprised of terms and definitions, as well as var
 * **AKA**	Links alias term to term.
 * **Supplements**	Links secondary definition to definition, or qualifier to term.
 
-## Undertsanding the competition
-DeftEval is split into three subtasks,
-- **Subtask 1: Sentence Classification**, Given a sentence, classify whether or not it contains a definition. This is the traditional definition extraction task.
-
-- **Subtask 2: Sequence Labeling**, Label each token with BIO tags according to the corpus' tag specification.
-
-- **Subtask 3: Relation Classification**, Given the tag sequence labels, label the relations between each tag according to the corpus' relation specification.
-
+## Evaluation of Tasks 
 Test data will be evaluated in the following CONLL-2003-like formats:
 
 - Subtask 1: Sentence Classification 
@@ -97,6 +99,12 @@ Test data will be evaluated in the following CONLL-2003-like formats:
   
 For specifics about evaluation and submission through the CodeLab you can check [this](https://competitions.codalab.org/competitions/20900#learn_the_details-evaluation).
 
+## Contributions
+We present in this repository our efforts to solve the famous definition extraction NLP problem as our official partcipation in DeftEval 2020 compeition on codalab. We built multiple approaches ranging from basline approaches to much complex ones. Our Approaches are as follows:
+- Basline approach using BOW or TF-IDF with classical ML classifiers (NB - LR)
+- Using Doc2vec with external training corpus.
+- Using word2vec summation.
+- Using Spacy's Text Classfier Pipeline.
 ## Resources
 1. [*Weakly Supervised Definition Extraction (Luis Espinosa-Anke, Francesco Ronzano and Horacio Saggion), Proceedings of Recent Advances in Natural Language Processing, pages 176–185,Hissar, Bulgaria, Sep 7–9 2015.*](https://www.aclweb.org/anthology/R15-1025.pdf)
 
