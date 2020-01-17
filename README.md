@@ -104,7 +104,116 @@ We present in this repository our efforts to solve the famous definition extract
 - Basline approach using BOW or TF-IDF with classical ML classifiers (NB - LR)
 - Using Doc2vec with external training corpus.
 - Using word2vec summation.
-- Using Spacy's Text Classfier Pipeline.
+- Using Spacy's Text Classfier Pipeline.   
+
+### **1. Basline approach using BOW or TF-IDF with classical ML classifiers (NB - LR)**
+In this approach I seek to combine classical embedding techniques and
+classical machine learning classifiers in order to build a solution.
+BoW converts text into the matrix of occurrence of words within a given
+document. It focuses on whether given words occurred or not in the
+document, and it generates a matrix that we might see referred to as a ​ BoW
+matrix or a document term matrix.
+TF-IDF (Term Frequency-Inverse Document Frequency) is simply a way of
+normalizing our Bag of Words(BoW) by looking at each word’s frequency in
+comparison to the document frequency. In other words, it’s a way of
+representing how important a particular term is in the context of a given
+document, based on how many times the term appears and how many other
+documents that same term appears in. ​ The higher the TF-IDF, the more
+important that term is to that document.  
+N-grams are combinations of adjacent words in a given text, where n is the
+number of words that are included in the tokens. In all the embedding techniques used here we have ​ N-grams range set with the lower and upper
+bounds suitable for every experiment.  
+Classifiers Used in this approach:
++ **LR (Logistic Regression):** is a statistical model that in its basic form uses a logistic function to model a binary dependent variable.
++ **NB (Naive Bayes):​** are a set of supervised learning algorithms based on applying Bayes’ theorem with the “naive” assumption of conditional independence between every pair of features given the value of the class variable. We use the Multinomial variation here.
++  **DTs (Decision Trees):** are a non-parametric supervised learning methods used for classification and regression. The goal is to create a model that predicts the value of a target variable by learning simple decision rules inferred from the data features.   
+
+**Results of Approach 1:**  
+Below are the classification report of the best score recorded in this
+approach with F1 score for positive class = 0.66. This was the result of
+using Logistic Regression with Bag of Words.
+![alt text](./screenshots/classical_approach_results.png)
+
+### **2. Using Doc2vec with external training corpus**
+**Doc2Vec** is a model that represents each Document as a Vector. The goal of Doc2Vec is to create a numeric representation of a document, regardless of its length. So, the input of texts per document can be various while the output is fixed-length vectors.   
+Design of Doc2Vec is based on Word2Vec. But unlike words, documents do not come in logical structures such as words, so the another method has to be found. There are two implementations:
+
+1. Paragraph Vector - Distributed Memory (PV-DM)
+2. Paragraph Vector - Distributed Bag of Words (PV-DBOW)
+
+**Gensim's** Doc2Vec class implements Doc2Vec algorithm. To define Gensim Doc2Vec model there are some attributes could be set like:
+* **Vector Size:** Dimensionality of the documents feature vector.
+* **Min Count:** Ignores all words with total frequency lower than this.
+* **Epochs:** Number of iterations (epochs) over the corpus.
+* **Workers:** Use these many worker threads to train the model (faster training with multicore machines).   
+```python
+model = Doc2Vec(vector_size=50, min_count=2, epochs=40, workers=8)
+```
+After defining the shape of the mode, we will create the vocabulary of words then the model will be trained on the training corpus
+```python
+model.build_vocab(train_corpus)
+model.train(train_corpus, total_examples=model.corpus_count,epochs=model.epochs)
+``` 
+Now the Doc2Vec model is ready to vectorize the sentence and give it its numerical features vector. 
+
+**Apply Classification Algorithms:**  
+All the following classification methods are used from **sklearn** library and a classification report is provided given the predicted labels -after performing the algorithm on the test data- and the true labels.
+
+| Algorithm           | F1-score class 0| F1-score class 1| Accuracy |
+| ------------------- |:---------------:|:---------------:|:--------:|
+| Naive Bayes         | 0.75            | 0.38            | 0.65     |
+| Decision Tree       | 0.70            | 0.40            | 0.60     |
+| Logistic Regression | 0.72            | 0.52            | 0.64     |
+
+### **3. Using word2vec summation**
+**Word2Vec** is a more recent model that embeds words in a lower-dimensional vector space using a shallow neural network. The result is a set of word-vectors where vectors close together in vector space have similar meanings based on context, and word-vectors distant to each other have differing meanings. For example, strong and powerful would be close together and strong and Paris would be relatively far.
+
+![alt text](https://www.smartcat.io/media/1395/3d_transparent.png?width=500&height=198.90795631825273)
+
+With the Word2Vec model, we can calculate the vectors for each word in a document. But what if we want to calculate a vector for the entire document?. We could use Word2Vec for this task by inferring a vector for each word in the document using Word2Vec model then summing all these words vectors to create one vector that represent the whole document.   
+
+**Gensim** has its Word2Vec model but here we added to it **GoogleNews Word Embeddings** which is a file contains vectors for 3 millions word get from google news. Each on of these vectors is 300 demission.
+```python
+model = KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin', binary=True)
+```
+
+**Apply Classification Algorithms:**  
+All the following classification methods are used from **sklearn** library and a classification report is provided given the predicted labels -after performing the algorithm on the test data- and the true labels.
+
+| Algorithm           | F1-score class 0| F1-score class 1| Accuracy |
+| ------------------- |:---------------:|:---------------:|:--------:|
+| Naive Bayes         | 0.74            | 0.41            | 0.64     |
+| Decision Tree       | 0.74            | 0.52            | 0.66     |
+| Logistic Regression | 0.76            | 0.58            | 0.69     |
+
+### **4. Using Spacy's Text Classfier Pipeline**
++ Textclassification models in Spacy can be used to solve a wide variety of
+problems. Differences in text length, number of labels, difficulty, andruntime performance constraints mean that no single algorithm
+performs well on all types of problems.
++ To handle a wider variety of problems, the ​ TextCategorizer​ object
+allows configuration of its model architecture, using the architecture
+keyword argument.
++ Chosen Architecture to be used is ​ simple_cnn ​ , a ​ neural​ ​ network​ model
+where token vectors are calculated using a ​ CNN​ .
++ Built my model over an ​ existing​ language model from Spacy
+*en_core_web_lg* ​ instead of building it over a blank language model.
++ I had to ​ change​ the ​ label​ ​ format​ to match the Spacy Labeling Format.
+Instead of a binary vector for labels we will have for each label value a
+dict indicating whether this instance is a definition or not.
+Example: *{"DEFINITION": True, "NOT DEFINITION": False}*  
+
+**Training Details:**
++ Used ​ compounding​ ​ batch​ ​ sizes​ of starting size 32, maximum size of
+100 and step size 1.001. This values were manually tuned to find the
+best results at them.
++ For each iteration, we evaluate the model by computing loss, precision,
+recall, f1-score on evaluation data (dev split). Main metric was ​ loss​ .
++ Used ​ dropout​ rate of 0.2 and A
+dam​ Optimizer
++ Used ​ early​ ​ stopping​ with loss <= 0.005
+
+**Classification Report:**
+![alt text](./screenshots/spaCy_model_results.png)
 ## Resources
 1. [*Weakly Supervised Definition Extraction (Luis Espinosa-Anke, Francesco Ronzano and Horacio Saggion), Proceedings of Recent Advances in Natural Language Processing, pages 176–185,Hissar, Bulgaria, Sep 7–9 2015.*](https://www.aclweb.org/anthology/R15-1025.pdf)
 
