@@ -213,6 +213,7 @@ dam​ Optimizer
 + Used ​ early​ ​ stopping​ with loss <= 0.005
 
 **Classification Report:**
+  
 ![alt text](./screenshots/spaCy_model_results.png)
 
 
