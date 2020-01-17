@@ -232,6 +232,7 @@ All the following classification methods are used from **sklearn** library and a
 **LSTM** Long short-term memory (LSTM) is an artificial recurrent neural network (RNN) architecture. A common LSTM unit is composed of a cell, an input gate, an output gate and a forget gate. The cell remembers values over arbitrary time intervals and the three gates regulate the flow of information into and out of the cell.
 
 **Network Summary**
+  
 | Layer (type)    |     Output Shape    | Param #  |
 | ----------------|:-------------------:|:--------:|
 | Embedding       |  (None, None, 100)  |  1579300 |
@@ -240,11 +241,12 @@ All the following classification methods are used from **sklearn** library and a
 | Dense           |  (None, 1)          |  15794   |
 
 **Using Word2Vec as The Fixed Embeddings in the Embeddings Layer:**  
+  
 | F1-score class 0| F1-score class 1| Accuracy |
 | ----------------|:---------------:|:--------:|
 | 0.78            | 0.61            | 0.72     |
 
-**Using Using Glove Embeddings:**
+**Using Glove Embeddings:**
   
 The second approach used with LSTM is using Glove's embeddings as the fixed embeddings of the embeddings layer. GloVe is an unsupervised learning algorithm for obtaining vector representations for words. Training is performed on aggregated global word-word co-occurrence statistics from a corpus, and the resulting representations showcase interesting linear substructures of the word vector space. The network is used with freezing the embeddings and with training them to experiment on the different results. The shown results is of the trainable weights.
 
