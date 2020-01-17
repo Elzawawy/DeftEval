@@ -214,6 +214,52 @@ dam​ Optimizer
 
 **Classification Report:**
 ![alt text](./screenshots/spaCy_model_results.png)
+
+
+### **5. Using Doc2Vec and Training on our data**
+
+**Apply Classification Algorithms:**  
+All the following classification methods are used from **sklearn** library and a classification report is provided given the predicted labels -after performing the algorithm on the test data- and the true labels.
+
+| Algorithm           | F1-score class 0| F1-score class 1| Accuracy |
+| ------------------- |:---------------:|:---------------:|:--------:|
+| Naive Bayes         | 0.78            | 0.61            | 0.72     |
+| Linear SVC          | 0.77            | 0.60            | 0.71     |
+| Logistic Regression | 0.77            | 0.60            | 0.71     |
+
+
+### **6. Using LSTM**
+**LSTM** Long short-term memory (LSTM) is an artificial recurrent neural network (RNN) architecture. A common LSTM unit is composed of a cell, an input gate, an output gate and a forget gate. The cell remembers values over arbitrary time intervals and the three gates regulate the flow of information into and out of the cell.
+
+**Network Summary**
+| Layer (type)    |     Output Shape    | Param #  |
+| ----------------|:-------------------:|:--------:|
+| Embedding       |  (None, None, 100)  |  1579300 |
+| Bidirectional   |  (None, 200)        |  160800  |
+| Dense           |  (None, 15793)      |  3174393 |
+| Dense           |  (None, 1)          |  15794   |
+
+**Using Word2Vec as The Fixed Embeddings in the Embeddings Layer:**  
+| F1-score class 0| F1-score class 1| Accuracy |
+| ----------------|:---------------:|:--------:|
+| 0.78            | 0.61            | 0.72     |
+
+**Using Using Glove Embeddings:**
+  
+The second approach used with LSTM is using Glove's embeddings as the fixed embeddings of the embeddings layer. GloVe is an unsupervised learning algorithm for obtaining vector representations for words. Training is performed on aggregated global word-word co-occurrence statistics from a corpus, and the resulting representations showcase interesting linear substructures of the word vector space. The network is used with freezing the embeddings and with training them to experiment on the different results. The shown results is of the trainable weights.
+
+| F1-score class 0| F1-score class 1| Accuracy |
+| ----------------|:---------------:|:--------:|
+| 0.78            | 0.35            | 0.67     |
+
+### **7. Using SBERT**
+**BERT (Bidirectional Encoder Representations from Transformers)** is a paper published by researchers at Google AI Language. It has caused a stir in the Machine Learning community by presenting state-of-the-art results in a wide variety of NLP tasks. BERT produces out-of-the-box rather bad sentence embeddings. Sentence BERT paper fine-tunes BERT / RoBERTa / DistilBERT / ALBERT / XLNet with a siamese or triplet network structure to produce semantically meaningful sentence embeddings that can be used in unsupervised scenarios. The embeddings are used to encode the documents and use a naive bayes classifier to classify the dev dataset. The results shown are of the classification using the naive bayes classifier.
+
+| F1-score class 0| F1-score class 1| Accuracy |
+| ----------------|:---------------:|:--------:|
+| 0.67            | 0.53            | 0.61     |
+
+
 ## Resources
 1. [*Weakly Supervised Definition Extraction (Luis Espinosa-Anke, Francesco Ronzano and Horacio Saggion), Proceedings of Recent Advances in Natural Language Processing, pages 176–185,Hissar, Bulgaria, Sep 7–9 2015.*](https://www.aclweb.org/anthology/R15-1025.pdf)
 
