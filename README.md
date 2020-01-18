@@ -2,6 +2,9 @@
 <p align="center">
   <img src="https://www.kdnuggets.com/wp-content/uploads/nlp-word-cloud.jpg"/>
 </p>
+<p align="center">
+  Made with :heart: by <b>Amr Elzawawy</b>, <b>Omar Swidan</b> and <b>Mostafa Yousry</b>.
+</p>
 
 ## Understanding The Problem
 **Definition Extraction** (DE) is the task to extract textual definitions from naturally occurring text. It is **gaining popularity** as a prior step for constructing taxonomies, ontologies, automatic glossaries or dictionary entries. These fields of application motivate greater interest in well-formed encyclopedic text from which to extract definitions, and therefore DE for academic or lay discourse has received less attention. 
@@ -100,39 +103,36 @@ Test data will be evaluated in the following CONLL-2003-like formats:
 For specifics about evaluation and submission through the CodeLab you can check [this](https://competitions.codalab.org/competitions/20900#learn_the_details-evaluation).
 
 ## Contributions
-We present in this repository our efforts to solve the famous definition extraction NLP problem as our official partcipation in DeftEval 2020 compeition on codalab. We built multiple approaches ranging from basline approaches to much complex ones. Our Approaches are as follows:
+We present in this repository our efforts to solve the famous definition extraction NLP problem as our official partcipation in DeftEval 2020 compeition on codalab. We built multiple approaches ranging from basline approaches to much complex ones. Our Approaches are listed below, then we explore them one by one in much detail.
 - Basline approach using BOW or TF-IDF with classical ML classifiers (NB - LR)
 - Using Doc2vec with external training corpus.
+- Using Doc2vec with training on our data.
 - Using word2vec summation.
-- Using Spacy's Text Classfier Pipeline.   
+- Using Spacy's Text Classfier Pipeline.
+- Using LSTM
+- Using SBERT
 
-### **1. Basline approach using BOW or TF-IDF with classical ML classifiers (NB - LR)**
-In this approach I seek to combine classical embedding techniques and
-classical machine learning classifiers in order to build a solution.
-BoW converts text into the matrix of occurrence of words within a given
-document. It focuses on whether given words occurred or not in the
-document, and it generates a matrix that we might see referred to as a ​ BoW
-matrix or a document term matrix.
-TF-IDF (Term Frequency-Inverse Document Frequency) is simply a way of
-normalizing our Bag of Words(BoW) by looking at each word’s frequency in
-comparison to the document frequency. In other words, it’s a way of
-representing how important a particular term is in the context of a given
-document, based on how many times the term appears and how many other
-documents that same term appears in. ​ The higher the TF-IDF, the more
-important that term is to that document.  
-N-grams are combinations of adjacent words in a given text, where n is the
-number of words that are included in the tokens. In all the embedding techniques used here we have ​ N-grams range set with the lower and upper
-bounds suitable for every experiment.  
+### **1. Baseline approach using BOW or TF-IDF with classical ML classifiers (NB - LR)**
+We seek to combine classical embedding techniques and classical machine learning classifiers in order to build a solution.
+BoW converts text into the matrix of occurrence of words within a given document. It focuses on whether given words occurred or not in the document.
+
+TF-IDF (Term Frequency-Inverse Document Frequency) is simply a way of normalizing our Bag of Words(BoW) by looking at each word’s frequency in comparison to the document frequency. In other words, it’s a way of representing how important a particular term is in the context of a given document, based on how many times the term appears and how many other
+documents that same term appears in.
+
+N-grams are combinations of adjacent words in a given text, where n is the number of words that are included in the tokens. In all the embedding techniques used here we have ​ N-grams range set with the lower and upper bounds suitable for every experiment.  
+
 Classifiers Used in this approach:
 + **LR (Logistic Regression):** is a statistical model that in its basic form uses a logistic function to model a binary dependent variable.
-+ **NB (Naive Bayes):​** are a set of supervised learning algorithms based on applying Bayes’ theorem with the “naive” assumption of conditional independence between every pair of features given the value of the class variable. We use the Multinomial variation here.
++ **NB (Naive Bayes):** are a set of supervised learning algorithms based on applying Bayes’ theorem with the “naive” assumption of conditional independence between every pair of features given the value of the class variable. We use the Multinomial variation here.
 +  **DTs (Decision Trees):** are a non-parametric supervised learning methods used for classification and regression. The goal is to create a model that predicts the value of a target variable by learning simple decision rules inferred from the data features.   
 
 **Results of Approach 1:**  
 Below are the classification report of the best score recorded in this
 approach with F1 score for positive class = 0.66. This was the result of
 using Logistic Regression with Bag of Words.
-![alt text](./screenshots/classical_approach_results.png)
+<p align ="center">
+<img src="./screenshots/classical_approach_results.png"/>
+</p>
 
 ### **2. Using Doc2vec with external training corpus**
 **Doc2Vec** is a model that represents each Document as a Vector. The goal of Doc2Vec is to create a numeric representation of a document, regardless of its length. So, the input of texts per document can be various while the output is fixed-length vectors.   
@@ -165,10 +165,24 @@ All the following classification methods are used from **sklearn** library and a
 | Decision Tree       | 0.70            | 0.40            | 0.60     |
 | Logistic Regression | 0.72            | 0.52            | 0.64     |
 
-### **3. Using word2vec summation**
+### **3. Using Doc2Vec and Training on our data**
+
+**Apply Classification Algorithms:**  
+All the following classification methods are used from **sklearn** library and a classification report is provided given the predicted labels -after performing the algorithm on the test data- and the true labels.
+
+| Algorithm           | F1-score class 0| F1-score class 1| Accuracy |
+| ------------------- |:---------------:|:---------------:|:--------:|
+| Naive Bayes         | 0.78            | 0.61            | 0.72     |
+| Linear SVC          | 0.77            | 0.60            | 0.71     |
+| Logistic Regression | 0.77            | 0.60            | 0.71     |
+
+
+### **4. Using word2vec summation**
 **Word2Vec** is a more recent model that embeds words in a lower-dimensional vector space using a shallow neural network. The result is a set of word-vectors where vectors close together in vector space have similar meanings based on context, and word-vectors distant to each other have differing meanings. For example, strong and powerful would be close together and strong and Paris would be relatively far.
 
-![alt text](https://www.smartcat.io/media/1395/3d_transparent.png?width=500&height=198.90795631825273)
+<p align="center">
+<img src="https://www.smartcat.io/media/1395/3d_transparent.png?width=500&height=198.90795631825273"/>
+</p>
 
 With the Word2Vec model, we can calculate the vectors for each word in a document. But what if we want to calculate a vector for the entire document?. We could use Word2Vec for this task by inferring a vector for each word in the document using Word2Vec model then summing all these words vectors to create one vector that represent the whole document.   
 
@@ -186,48 +200,27 @@ All the following classification methods are used from **sklearn** library and a
 | Decision Tree       | 0.74            | 0.52            | 0.66     |
 | Logistic Regression | 0.76            | 0.58            | 0.69     |
 
-### **4. Using Spacy's Text Classfier Pipeline**
-+ Textclassification models in Spacy can be used to solve a wide variety of
-problems. Differences in text length, number of labels, difficulty, andruntime performance constraints mean that no single algorithm
-performs well on all types of problems.
-+ To handle a wider variety of problems, the ​ TextCategorizer​ object
-allows configuration of its model architecture, using the architecture
-keyword argument.
-+ Chosen Architecture to be used is ​ simple_cnn ​ , a ​ neural​ ​ network​ model
-where token vectors are calculated using a ​ CNN​ .
-+ Built my model over an ​ existing​ language model from Spacy
-*en_core_web_lg* ​ instead of building it over a blank language model.
-+ I had to ​ change​ the ​ label​ ​ format​ to match the Spacy Labeling Format.
-Instead of a binary vector for labels we will have for each label value a
-dict indicating whether this instance is a definition or not.
+### **5. Using Spacy's Text Classfier Pipeline**
+Textclassification models in **Spacy** can be used to solve a wide variety of problems. Differences in text length, number of labels, difficulty, andruntime performance constraints mean that no single algorithm
+performs well on all types of problems. To handle a wider variety of problems, the **TextCategorizer** object
+allows configuration of its **model architecture**, using the architecture keyword argument.
+
+Chosen Architecture to be used is **simple_cnn** , a **neural network** model where token vectors are calculated using a CNN. Built the model over an **existing language model** from Spacy *en_core_web_lg* instead of building it over a blank language model. We had to change the label format to match the Spacy Labeling Format. Instead of a binary vector for labels we will have for each label value a dict indicating whether this instance is a definition or not.
 Example: *{"DEFINITION": True, "NOT DEFINITION": False}*  
 
 **Training Details:**
-+ Used ​ compounding​ ​ batch​ ​ sizes​ of starting size 32, maximum size of
++ Used **compounding batch sizes** of starting size 32, maximum size of
 100 and step size 1.001. This values were manually tuned to find the
 best results at them.
 + For each iteration, we evaluate the model by computing loss, precision,
-recall, f1-score on evaluation data (dev split). Main metric was ​ loss​ .
-+ Used ​ dropout​ rate of 0.2 and A
-dam​ Optimizer
-+ Used ​ early​ ​ stopping​ with loss <= 0.005
+recall, f1-score on evaluation data (dev split). **Main metric was loss**.
++ Used **dropout** rate of 0.2 and **Adam** Optimizer
++ Used **early stopping** with loss <= 0.005
 
 **Classification Report:**
-  
-![alt text](./screenshots/spaCy_model_results.png)
-
-
-### **5. Using Doc2Vec and Training on our data**
-
-**Apply Classification Algorithms:**  
-All the following classification methods are used from **sklearn** library and a classification report is provided given the predicted labels -after performing the algorithm on the test data- and the true labels.
-
-| Algorithm           | F1-score class 0| F1-score class 1| Accuracy |
-| ------------------- |:---------------:|:---------------:|:--------:|
-| Naive Bayes         | 0.78            | 0.61            | 0.72     |
-| Linear SVC          | 0.77            | 0.60            | 0.71     |
-| Logistic Regression | 0.77            | 0.60            | 0.71     |
-
+<p align="center">  
+<img src="./screenshots/spaCy_model_results.png"/>
+</p>
 
 ### **6. Using LSTM**
 **LSTM** Long short-term memory (LSTM) is an artificial recurrent neural network (RNN) architecture. A common LSTM unit is composed of a cell, an input gate, an output gate and a forget gate. The cell remembers values over arbitrary time intervals and the three gates regulate the flow of information into and out of the cell.
@@ -263,10 +256,16 @@ The second approach used with LSTM is using Glove's embeddings as the fixed embe
 | 0.67            | 0.53            | 0.61     |
 
 
+## Conclusion
+As a team of three members, each of us had the chance to work on the problem and its solution framework from start to end in order to have a cumbersome of approaches to a solution at the end of the day. It was a truely frutiful learning experience and yet a quick dive into the large vast domain of NLP. **The best scores resulted was from the Spacy's Text Classifier approach.** Other approaches didn't do good enough at all but it was noteable to try them in order to rule them out. We plan now for the online submission to sumbit the Spacy's text classifier results and see how will we rank in the leaderboards hopefully. Now we recommend you take a look at the references below for more exploration. :closed_book: :green_book:
+
 ## Resources
 1. [*Weakly Supervised Definition Extraction (Luis Espinosa-Anke, Francesco Ronzano and Horacio Saggion), Proceedings of Recent Advances in Natural Language Processing, pages 176–185,Hissar, Bulgaria, Sep 7–9 2015.*](https://www.aclweb.org/anthology/R15-1025.pdf)
 
-2. [*DEFT: A corpus for definition extraction in free- and semi-structured text, Sasha Spala, Nicholas A. Miller, Yiming Yang, Franck Dernoncourt, Carl Dockhorn*](https://www.aclweb.org/anthology/W19-4015/) 
-  - [Check the Github Repo.](https://github.com/adobe-research/deft_corpus)
+2. [*DEFT: A corpus for definition extraction in free- and semi-structured text, Sasha Spala, Nicholas A. Miller, Yiming Yang, Franck Dernoncourt, Carl Dockhorn*](https://www.aclweb.org/anthology/W19-4015/). [Check the Github Repo.](https://github.com/adobe-research/deft_corpus)
   
 3. [*CodaLab DeftEval 2020 (SemEval 2020 - Task 6), Organized by sspala.*](https://competitions.codalab.org/competitions/20900#learn_the_details)
+
+4. [*Training a text classification model, spacy docs*](https://spacy.io/usage/training#textcat)
+
+5. [*Document Embedding Techniques: A review of notable literature on the topic by Shay Palachy*](https://towardsdatascience.com/document-embedding-techniques-fed3e7a6a25d)
