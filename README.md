@@ -5,7 +5,7 @@
 <p align="center">
   Made with :heart: by <b>Amr Elzawawy</b>, <b>Omar Swidan</b> and <b>Mostafa Yousry</b>.
 </p>
-
+This work was developed as final project for AI Course Fall 2019/2020 offering at AlexU Faculty of Engineering. 
 ## Understanding The Problem
 **Definition Extraction** (DE) is the task to extract textual definitions from naturally occurring text. It is **gaining popularity** as a prior step for constructing taxonomies, ontologies, automatic glossaries or dictionary entries. These fields of application motivate greater interest in well-formed encyclopedic text from which to extract definitions, and therefore DE for academic or lay discourse has received less attention. 
 
