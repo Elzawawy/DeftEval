@@ -5,21 +5,22 @@ from spacy.util import minibatch, compounding
 from pathlib import Path
 from sklearn.metrics import classification_report
 
+
 class DeftSpacyClassifier(object):
 
-    def __init__(self, lang_model= None, positive_label="POSITIVE", negative_label="NEGATIVE"):
+    def __init__(self, lang_model=None, positive_label="POSITIVE", negative_label="NEGATIVE"):
         super().__init__()
-        if lang_model is not None: 
+        if lang_model is not None:
             self.nlp = spacy.load(lang_model)  # load existing spaCy model.
-            print("Loaded model '%s'" %lang_model)
+            print("Loaded model '%s'" % lang_model)
         else:
             self.nlp = en_core_web_lg.load()     # load default langauge model.
             print("Loaded default model '%s'" % en_core_web_lg)
-        
+
         if "textcat" not in self.nlp.pipe_names:
-            # Architecture: a neural network model where token vectors are calculated using a CNN. 
-            self.textcat = self.nlp.create_pipe("textcat", 
-                config={"exclusive_classes": True, "architecture": "simple_cnn"})
+            # Architecture: a neural network model where token vectors are calculated using a CNN.
+            self.textcat = self.nlp.create_pipe("textcat",
+                                                config={"exclusive_classes": True, "architecture": "simple_cnn"})
             self.nlp.add_pipe(self.textcat, last=True)
         else:
             self.textcat = self.nlp.get_pipe("textcat")
@@ -31,11 +32,13 @@ class DeftSpacyClassifier(object):
         self.textcat.add_label(self.POSITIVE)
         self.textcat.add_label(self.NEGATIVE)
 
-    def fit(self, train_texts, dev_texts, train_cats, dev_cats, n_iter=20, loss_tol=0.005, output_dir = None):
+    def fit(self, train_texts, dev_texts, train_cats, dev_cats, n_iter=20, loss_tol=0.005, output_dir=None):
 
-        train_data = list(zip(train_texts, [{"cats": cats} for cats in train_cats]))
+        train_data = list(
+            zip(train_texts, [{"cats": cats} for cats in train_cats]))
         # get names of other pipes to disable them during training
-        other_pipes = [pipe for pipe in self.nlp.pipe_names if pipe != "textcat"]
+        other_pipes = [
+            pipe for pipe in self.nlp.pipe_names if pipe != "textcat"]
         with self.nlp.disable_pipes(*other_pipes):  # only train textcat
             # Initialize the pipe for training
             optimizer = self.nlp.begin_training()
@@ -52,18 +55,19 @@ class DeftSpacyClassifier(object):
             batches = minibatch(train_data, size=batch_sizes)
             for batch in batches:
                 texts, annotations = zip(*batch)
-                self.nlp.update(texts, annotations, sgd=optimizer, drop=0.2, losses=losses)
+                self.nlp.update(texts, annotations,
+                                sgd=optimizer, drop=0.2, losses=losses)
             with self.textcat.model.use_params(optimizer.averages):
                 # evaluate on the dev data split off in load_data()
                 scores = self.evaluate(self.nlp.tokenizer, dev_texts, dev_cats)
             print("{0:.3f}\t{1:.3f}\t{2:.3f}\t{3:.3f}".format(
-                    losses["textcat"],
-                    scores["textcat_p"],
-                    scores["textcat_r"],
-                    scores["textcat_f"]))
+                losses["textcat"],
+                scores["textcat_p"],
+                scores["textcat_r"],
+                scores["textcat_f"]))
             # Early Stopping Condition.
             if(losses["textcat"] <= loss_tol):
-              break
+                break
         if output_dir is not None:
             output_dir = Path(output_dir)
             # If it doesn't exist, no worries let's create it!
@@ -107,12 +111,40 @@ class DeftSpacyClassifier(object):
 
     def score(self, dev_texts, dev_labels):
         if(self.classifier_output is None):
-            raise NotImplementedError("You must save the model to an output directory after training, in order to use this function. Other ways are not implemented currently.")
+            raise NotImplementedError(
+                "You must save the model to an output directory after training, in order to use this function. Other ways are not implemented currently.")
         nlp = spacy.load(self.classifier_output)
         predicted = []
-        for index,item in enumerate(dev_texts):
+        for index, item in enumerate(dev_texts):
             doc = nlp(item)
             predict_doc = 1 if doc.cats[self.POSITIVE] > doc.cats[self.NEGATIVE] else 0
             predicted.append(predict_doc)
         # Print the resulting scores.
         print(classification_report(list(dev_labels), predicted))
+
+    def write_prediction_to_file(self, input_directory, output_directory):
+        # some error checking at the start of the function.
+        if(self.classifier_output is None):
+            raise NotImplementedError(
+                "You must save the model to an output directory after training, in order to use this function. Other ways are not implemented currently.")
+        elif(not (os.path.isdir(input_directory) or os.path.isdir(output_directory))):
+            raise NotADirectoryError(
+                "One of the two arguments are not a valid directory, all args to this method should be directories.")
+        # load the model placed in the classifier path previously, it must be with value.
+        nlp = spacy.load(self.classifier_output)
+        files = os.listdir(input_directory)
+        # Explore files in the input files directory
+        for file in files:
+            # read each file in a temporary dataframe.
+            dataframe = pd.read_csv(os.path.join(
+                input_directory, file), sep="\t", header=None)
+            dataframe.columns[0] = "Sentence"
+            # for each file we predict a label based on our saved model and write this sentence to a file. 
+            # TODO: the current method being used is not efficient nor optimized, and need a better approach.
+            for index, item in enumerate(dataframe["Sentence"]):
+                doc = nlp(item)
+                predict_doc = "1" if doc.cats[self.POSITIVE] > doc.cats[self.NEGATIVE] else "0"
+                op_filename = os.path.join(output_directory, file)
+                with open(op_filename, "a+") as op_file:
+                    op_file.write(item+"\t"+predict_doc+"\n")
+                    op_file.close()
