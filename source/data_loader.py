@@ -2,8 +2,8 @@ import pandas as pd
 import os
 import spacy
 from spacy.lang.en import English
-from scripts import task1_converter 
 from pathlib import Path
+from . import task1_converter
 
 class DeftCorpusLoader(object):
     """"""
