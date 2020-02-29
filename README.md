@@ -5,8 +5,13 @@
 <p align="center">
   Made with :heart: by <b>Amr Elzawawy</b>, <b>Omar Swidan</b> and <b>Mostafa Yousry</b>.
 </p>
-This work was developed as final project for AI Course Fall 2019/2020 offering at AlexU Faculty of Engineering. 
+
+## Brief Summary
+This work was developed as final project for AI Course Fall 2019/2020 offering at AlexU Faculty of Engineering. It is our offical contribution for [Deft Eval Competition Subtask 1](https://competitions.codalab.org/competitions/22759) and running on it's offical [dataset](https://github.com/adobe-research/deft_corpus).
+It was an amazing experience and a great oppurtinuity to learn and explore the NLP world ! We would like to thank you the organziers of the compeition for their great work and for their willingness to help hrough forum.
+
 ## Understanding The Problem
+
 **Definition Extraction** (DE) is the task to extract textual definitions from naturally occurring text. It is **gaining popularity** as a prior step for constructing taxonomies, ontologies, automatic glossaries or dictionary entries. These fields of application motivate greater interest in well-formed encyclopedic text from which to extract definitions, and therefore DE for academic or lay discourse has received less attention. 
 
 Historically, **Definition extraction** has been a popular topic in NLP research for well more than a decade, but has been limited to well defined, structured, and narrow conditions. In reality, natural language is complicated, and complicated data requires both complex solutions and data that reflects that reality.
