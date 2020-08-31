@@ -12,7 +12,8 @@ It was an amazing experience and a great oppurtinuity to learn and explore the N
 <p align = 'center'> 
  <a href="#intro">NLP Problem</a> <b> . </b>
   <a href="#comp">Competition & Dataset</a> <b> . </b>
- <a href="#work">Work Organization</a> <b> . </b>
+  <a href="#work">Work & Contributions</a> <b> . </b>
+  <a href="#refs">References</a>
 </p>
 
 ## <a name="intro"></a> Understanding The Problem
@@ -273,7 +274,7 @@ The second approach used with LSTM is using Glove's embeddings as the fixed embe
 ## Conclusion
 As a team of three members, each of us had the chance to work on the problem and its solution framework from start to end in order to have a cumbersome of approaches to a solution at the end of the day. It was a truely frutiful learning experience and yet a quick dive into the large vast domain of NLP. **The best scores resulted was from the Spacy's Text Classifier approach.** Other approaches didn't do good enough at all but it was noteable to try them in order to rule them out. We plan now for the online submission to sumbit the Spacy's text classifier results and see how will we rank in the leaderboards hopefully. Now we recommend you take a look at the references below for more exploration. :closed_book: :green_book:
 
-## Resources
+## <a name="refs"></a> References
 1. [*Weakly Supervised Definition Extraction (Luis Espinosa-Anke, Francesco Ronzano and Horacio Saggion), Proceedings of Recent Advances in Natural Language Processing, pages 176–185,Hissar, Bulgaria, Sep 7–9 2015.*](https://www.aclweb.org/anthology/R15-1025.pdf)
 
 2. [*DEFT: A corpus for definition extraction in free- and semi-structured text, Sasha Spala, Nicholas A. Miller, Yiming Yang, Franck Dernoncourt, Carl Dockhorn*](https://www.aclweb.org/anthology/W19-4015/). [Check the Github Repo.](https://github.com/adobe-research/deft_corpus)
