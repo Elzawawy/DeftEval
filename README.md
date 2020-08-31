@@ -6,11 +6,16 @@
   Made with :heart: by <b>Amr Elzawawy</b>, <b>Omar Swidan</b> and <b>Mostafa Yousry</b>.
 </p>
 
-## Brief Summary
 This work was developed as final project for AI Course Fall 2019/2020 offering at AlexU Faculty of Engineering. It is our offical contribution for [Deft Eval Competition Subtask 1](https://competitions.codalab.org/competitions/22759) and running on it's offical [dataset](https://github.com/adobe-research/deft_corpus).
 It was an amazing experience and a great oppurtinuity to learn and explore the NLP world ! We would like to thank you the organziers of the compeition for their great work and for their willingness to help hrough forum.
 
-## Understanding The Problem
+<p align = 'center'> 
+ <a href="#intro">NLP Problem</a> <b> . </b>
+  <a href="#comp">Competition & Dataset</a> <b> . </b>
+ <a href="#work">Work Organization</a> <b> . </b>
+</p>
+
+## <a name="intro"></a> Understanding The Problem
 
 **Definition Extraction** (DE) is the task to extract textual definitions from naturally occurring text. It is **gaining popularity** as a prior step for constructing taxonomies, ontologies, automatic glossaries or dictionary entries. These fields of application motivate greater interest in well-formed encyclopedic text from which to extract definitions, and therefore DE for academic or lay discourse has received less attention. 
 
@@ -32,7 +37,9 @@ Przepiorkowski et al., 2007; Monachesi and Westerhout, 2008).
 As for supervised settings, let us refer to (Navigli and Velardi, 2010), who **propose a generalization of word lattices for identifying definitional components and ultimately identifying definitional text fragments.** Finally, **more complex morphosyntactic patterns** were used by (Boella et al., 2014), who model single tokens as relations over the sentence syntactic dependencies.
 Or unsupervised approaches (Reiplinger et al., 2012) **benefit from hand crafted definitional patterns.**
 
-## Undertsanding the competition
+---
+
+## <a name="comp"></a> Undertsanding the competition
 DeftEval 2020 is part of SemEval 2020 official competition (Task 6). Organized by the Adobe Document Cloud Team. 
 DeftEval is split into three subtasks,
 - **Subtask 1: Sentence Classification**, Given a sentence, classify whether or not it contains a definition. This is the traditional definition extraction task.
@@ -41,7 +48,7 @@ DeftEval is split into three subtasks,
 
 - **Subtask 3: Relation Classification**, Given the tag sequence labels, label the relations between each tag according to the corpus' relation specification.
 
-## Understanding the DEFT Corpus
+### Understanding the DEFT Corpus
 The DEFT corpus contains roughly 7,000 sets of 3-sentence groupings extracted from textbooks of various topics from cnx.org. Each sentence set reflects a context window around which the author of the original text marked a bolded word to indicate a key term. For annotation reasons, the bolded words are not included in the annotated corpus, though you may find them from the textbooks themselves. Each grouping may have multiple term-definition pairs or none at all - it is simply a context window around a likely location for a term.
 
 Train and dev data is provided to you in a CONLL-like tab-deliniated format. Each line represents a token and its features. A single blank line indicates a sentence break; two blank lines indicates a new 3-sentence context window. All context windows begin with a sentence id followed by a period. These are treated as tokens in the data. Each token is represented by the following features:
@@ -58,7 +65,7 @@ Where:
 * **ROOT_ID** is the ID associated with the root of this relation (-1 if no relation/O tag, 0 if root, and TAG_ID of root if not the root)
 * **RELATION** is the relation tag of the token (0 if none).
 
-## Understanding Dataset Folder Structure (released on Github)
+### Understanding Dataset Folder Structure (released on Github)
 - `deft_corpus\data\deft_files`: contains the dataset files itself. It has two splits divided into two subfolders: 
   - `train`: For training split. 
   - `dev`: For development split (used as testing data for evaluation when submitting on website in Training Phase).
@@ -69,10 +76,10 @@ The deft_files have nearly the same files names as in source_text.
 This is intended for Subtask 1: Sentence Classification.
 
 
-## Understanding Dataset Annotation Schema 
+### Understanding Dataset Annotation Schema 
 The DEFT annotation schema is comprised of terms and definitions, as well as various auxiliary tags which aid in identifying complex or long-distance relationships between a term-definition pair. With the exception of "implicit" definitions (defined below), all terms are linked in some way to a definition or alias term.
 
-### Tag Full Schema
+#### Tag Full Schema
 
 * **Term:** A primary term.
 * **Alias Term:** A secondary or less common name for the primary term. Links to a term tag.
@@ -84,14 +91,14 @@ The DEFT annotation schema is comprised of terms and definitions, as well as var
 * **Referential Definition:**	NP reference to a previously mentioned definition tag. See Referential Term.
 * **Qualifier:** A specific date, location, or other condition under which the definition holds true. Typically seen at the clause level.
 
-### Relation Full Schema
+#### Relation Full Schema
 * **Direct-defines**	Links definition to term.
 * **Indirect-defines**	Links definition to referential term or term to referential definition.
 * **Refers-to**	Links referential term to term or referential definition to definition.
 * **AKA**	Links alias term to term.
 * **Supplements**	Links secondary definition to definition, or qualifier to term.
 
-## Evaluation of Tasks 
+### Evaluation of Tasks 
 Test data will be evaluated in the following CONLL-2003-like formats:
 
 - Subtask 1: Sentence Classification 
@@ -107,7 +114,9 @@ Test data will be evaluated in the following CONLL-2003-like formats:
   
 For specifics about evaluation and submission through the CodeLab you can check [this](https://competitions.codalab.org/competitions/20900#learn_the_details-evaluation).
 
-## Contributions
+---
+
+## <a name="work"></a> Our Work & Contributions
 We present in this repository our efforts to solve the famous definition extraction NLP problem as our official partcipation in DeftEval 2020 compeition on codalab. We built multiple approaches ranging from basline approaches to much complex ones. Our Approaches are listed below, then we explore them one by one in much detail.
 - Basline approach using BOW or TF-IDF with classical ML classifiers (NB - LR)
 - Using Doc2vec with external training corpus.
